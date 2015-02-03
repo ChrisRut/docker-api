@@ -80,9 +80,9 @@ module Docker
   end
 
   # Login to the Docker registry.
-  def authenticate!(options = {}, connection = connection)
+  def authenticate!(options = {}, connection_arg = connection)
     creds = options.to_json
-    connection.post('/auth', {}, :body => creds)
+    connection_arg.post('/auth', {}, :body => creds)
     @creds = creds
     true
   rescue Docker::Error::ServerError, Docker::Error::UnauthorizedError
