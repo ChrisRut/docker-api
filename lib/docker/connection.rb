@@ -5,6 +5,21 @@ class Docker::Connection
 
   attr_reader :url, :options
 
+  class << self
+    # TODO: Remove once https://github.com/swipely/docker-api/issues/441#issuecomment-246304338 is addressed
+    def api_version
+      @api_version || Docker::API_VERSION
+    end
+
+    def set_api_version(version)
+      @api_version = version
+    end
+
+    def reset_api_version
+      @api_version = nil
+    end
+  end
+
   # Create a new Connection. This method takes a url (String) and options
   # (Hash). These are passed to Excon, so any options valid for `Excon.new`
   # can be passed here.
@@ -80,7 +95,7 @@ private
     user_agent = "Swipely/Docker-API #{Docker::VERSION}"
     {
       :method        => http_method,
-      :path          => "/v#{Docker::API_VERSION}#{path}",
+      :path          => "/v#{self.class.api_version}#{path}",
       :query         => query,
       :headers       => { 'Content-Type' => content_type,
                           'User-Agent'   => user_agent,
